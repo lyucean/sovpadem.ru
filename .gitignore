@@ -1,0 +1,20 @@
+# IDE settings
+.idea/
+.vscode/
+.DS_Store
+
+# Composer
+/vendor/
+composer.lock
+
+# Database
+db_data/
+
+# Environment files
+.env
+
+# Logs
+*.log
+
+# Cache
+/src/cache/
