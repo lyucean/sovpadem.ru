@@ -21,6 +21,7 @@
 
 - Docker
 - Docker Compose
+- Make (опционально)
 
 ### Шаги по установке
 
@@ -31,11 +32,24 @@ cd sovpadem
 ```
 
 2. Запустите контейнеры:
+Для разработки (локальная среда):
+
 ```bash
-docker compose up -d
+make dev
+# или без Make
+docker compose --profile dev up -d
 ```
 
-3. Приложение будет доступно по адресу: http://localhost:8080
+Для продакшена:
+```bash
+make prod
+# или без Make
+docker compose --profile prod up -d
+```
+
+3. Доступ к приложению:
+- Разработка: http://localhost:8080
+- Продакшен: https://sovpadem.ru
 
 ```markdown
 sovpadem/
@@ -61,6 +75,18 @@ sovpadem/
 ├── composer.json
 ├── docker-compose.yml
 └── README.md
+```
+
+### Дополнительные команды
+```bash
+# Остановить все контейнеры
+make down
+
+# Полная очистка (удаление контейнеров и томов)
+make clean
+
+# Показать список доступных команд
+make help
 ```
 
 ## Функциональность

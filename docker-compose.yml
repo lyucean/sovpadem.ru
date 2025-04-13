@@ -3,8 +3,7 @@ services:
   web:
     image: php:8.2-apache
     container_name: sovpadem_web
-    ports:
-      - "8080:80"
+    restart: unless-stopped
     volumes:
       - ./src:/var/www/html
       - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
@@ -23,19 +22,87 @@ services:
       php -r \"unlink('composer-setup.php');\" &&
       cd /var/www && /usr/local/bin/composer install &&
       apache2-foreground"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.sovpadem.rule=Host(`sovpadem.ru`)
+      - traefik.http.routers.sovpadem.entrypoints=websecure
+      - traefik.http.routers.sovpadem.tls=true
+      - traefik.http.routers.sovpadem.tls.certresolver=letsencrypt
+      - traefik.http.services.sovpadem.loadbalancer.server.port=80
+    networks:
+      - web
+    profiles:
+      - prod
 
   db:
     image: mysql:8.0
     container_name: sovpadem_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-sovpadem}
+      MYSQL_USER: ${MYSQL_USER:-sovpadem_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
+    volumes:
+      - sovpadem-mysql-data:/var/lib/mysql
+    networks:
+      - web
+    profiles:
+      - prod
+
+  web_dev:
+    image: php:8.2-apache
+    container_name: sovpadem_web_dev
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
+      - ./composer.json:/var/www/composer.json
+      - ./vendor:/var/www/vendor
+    depends_on:
+      - db_dev
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+      - PHP_DISPLAY_ERRORS=1
+      - PHP_ERROR_REPORTING=E_ALL
+    command: >
+      bash -c "apt-get update && apt-get install -y libzip-dev zip unzip git && 
+      docker-php-ext-install pdo pdo_mysql zip && 
+      a2enmod rewrite headers && 
+      php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\" &&
+      php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
+      php -r \"unlink('composer-setup.php');\" &&
+      cd /var/www && /usr/local/bin/composer install &&
+      apache2-foreground"
+    networks:
+      - web
+    profiles:
+      - dev
+
+  db_dev:
+    image: mysql:8.0
+    platform: linux/arm64
+    container_name: sovpadem_db_dev
+    restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: sovpadem
-      MYSQL_USER: sovpadem_user
-      MYSQL_PASSWORD: sovpadem_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-sovpadem}
+      MYSQL_USER: ${MYSQL_USER:-sovpadem_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
     volumes:
-      - db_data:/var/lib/mysql
+      - sovpadem-mysql-data:/var/lib/mysql
+    networks:
+      - web
+    profiles:
+      - dev
 
 volumes:
-  db_data:
+  sovpadem-mysql-data:
+
+networks:
+  web:
+    external: true
