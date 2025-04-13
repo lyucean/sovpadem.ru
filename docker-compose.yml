@@ -13,6 +13,8 @@ services:
       - db
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
+      - APP_ENV=prod
+      - MYSQL_HOST=db
     command: >
       bash -c "apt-get update && apt-get install -y libzip-dev zip unzip git && 
       docker-php-ext-install pdo pdo_mysql zip && 
@@ -21,6 +23,7 @@ services:
       php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
       php -r \"unlink('composer-setup.php');\" &&
       cd /var/www && /usr/local/bin/composer install &&
+      php /var/www/html/init_db.php &&
       apache2-foreground"
     labels:
       - traefik.enable=true
@@ -45,6 +48,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
     volumes:
       - sovpadem-mysql-data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d # Добавляем инициализацию БД
     networks:
       - web
     profiles:
@@ -67,6 +71,8 @@ services:
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
       - PHP_DISPLAY_ERRORS=1
       - PHP_ERROR_REPORTING=E_ALL
+      - APP_ENV=dev
+      - MYSQL_HOST=db_dev
     command: >
       bash -c "apt-get update && apt-get install -y libzip-dev zip unzip git && 
       docker-php-ext-install pdo pdo_mysql zip && 
@@ -75,6 +81,7 @@ services:
       php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
       php -r \"unlink('composer-setup.php');\" &&
       cd /var/www && /usr/local/bin/composer install &&
+      php /var/www/html/init_db.php &&
       apache2-foreground"
     networks:
       - web
@@ -95,6 +102,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
     volumes:
       - sovpadem-mysql-data:/var/lib/mysql
+      - ./database:/docker-entrypoint-initdb.d # Добавляем инициализацию БД
     networks:
       - web
     profiles:

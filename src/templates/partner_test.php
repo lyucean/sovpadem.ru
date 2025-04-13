@@ -32,23 +32,19 @@ include 'layout.php';
 ?>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Sample questions
+$(document).ready(function() {
+    // Get questions from PHP variables passed from the controller
     const questions = [
-        "Вы бы хотели попробовать ролевые игры?",
-        "Вам интересен оральный секс?",
-        "Вы бы хотели использовать игрушки во время секса?",
-        "Вам нравится идея секса на природе?",
-        "Вы бы хотели попробовать БДСМ?",
-        // Add more questions as needed
+        <?php foreach ($questions as $question): ?>
+            "<?= htmlspecialchars($question['text']) ?>",
+        <?php endforeach; ?>
     ];
     
+    // Get answer options from PHP variables
     const answerOptions = [
-        { value: 1, text: "Фу" },
-        { value: 2, text: "Нет" },
-        { value: 3, text: "Если партнер хочет" },
-        { value: 4, text: "Да" },
-        { value: 5, text: "Конечно да" }
+        <?php foreach ($answerOptions as $option): ?>
+            { value: <?= $option['value'] ?>, text: "<?= htmlspecialchars($option['text']) ?>" },
+        <?php endforeach; ?>
     ];
     
     let currentQuestion = 0;
@@ -121,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         renderQuestion(currentQuestion);
     });
     
-    // Form submission
+    // Form submission - Fix the form selector to match the actual form ID
     $('#partnerCompatibilityTest').submit(function(e) {
         e.preventDefault();
         
@@ -131,27 +127,30 @@ document.addEventListener('DOMContentLoaded', function() {
             answers[currentQuestion] = parseInt(selectedValue);
         }
         
+        // Get test ID from the page
+        const testId = '<?= $testId ?>';
+        
         // Prepare data for submission
         const formData = {
             testId: testId,
             answers: JSON.stringify(answers)
         };
         
-        // Submit data via AJAX
+        // Make sure this is a POST request
         $.ajax({
-            url: '/submit-partner-test',
             type: 'POST',
+            url: '/submit-partner-test',
             data: formData,
-            dataType: 'json',
             success: function(response) {
-                if (response && response.success) {
-                    window.location.href = '/results/' + testId;
+                if (response.success) {
+                    window.location.href = `/results/${testId}`;
                 } else {
-                    alert('Произошла ошибка при обработке ответа сервера.');
+                    alert("Произошла ошибка: " + (response.error || "Неизвестная ошибка"));
                 }
             },
-            error: function() {
-                alert('Произошла ошибка при отправке теста. Пожалуйста, попробуйте еще раз.');
+            error: function(xhr, status, error) {
+                console.error("Error submitting partner test:", error);
+                alert("Произошла ошибка при отправке теста. Пожалуйста, попробуйте еще раз.");
             }
         });
     });

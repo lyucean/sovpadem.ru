@@ -32,23 +32,10 @@ include 'layout.php';
 <!-- Перемещаем скрипт после включения layout.php, чтобы jQuery был уже загружен -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Sample questions
-    const questions = [
-        "Вы бы хотели попробовать ролевые игры?",
-        "Вам интересен оральный секс?",
-        "Вы бы хотели использовать игрушки во время секса?",
-        "Вам нравится идея секса на природе?",
-        "Вы бы хотели попробовать БДСМ?",
-        // Add more questions as needed
-    ];
-    
-    const answerOptions = [
-        { value: 1, text: "Фу" },
-        { value: 2, text: "Нет" },
-        { value: 3, text: "Если партнер хочет" },
-        { value: 4, text: "Да" },
-        { value: 5, text: "Конечно да" }
-    ];
+    // Загружаем вопросы из PHP
+    const questions = <?= json_encode(array_column($questions, 'text')) ?>;
+    const questionIds = <?= json_encode(array_column($questions, 'id')) ?>;
+    const answerOptions = <?= json_encode($answerOptions) ?>;
     
     let currentQuestion = 0;
     const answers = {};
@@ -134,21 +121,17 @@ document.addEventListener('DOMContentLoaded', function() {
             answers: JSON.stringify(answers)
         };
         
-        // Submit data via AJAX
+        // Make sure this is a POST request
         $.ajax({
-            url: '/submit-test',
             type: 'POST',
+            url: '/submit-test',
             data: formData,
-            dataType: 'json',
             success: function(response) {
-                if (response && response.testId) {
-                    window.location.href = '/share/' + response.testId;
-                } else {
-                    alert('Произошла ошибка при обработке ответа сервера.');
-                }
+                window.location.href = `/share/${response.testId}`;
             },
-            error: function() {
-                alert('Произошла ошибка при отправке теста. Пожалуйста, попробуйте еще раз.');
+            error: function(xhr, status, error) {
+                console.error("Error submitting test:", error);
+                alert("Произошла ошибка при отправке теста. Пожалуйста, попробуйте еще раз.");
             }
         });
     });
