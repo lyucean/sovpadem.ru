@@ -5,7 +5,6 @@ help:
 	@echo "  make prod        - Start production environment"
 	@echo "  make down        - Stop all containers"
 	@echo "  make clean       - Stop and remove all containers, volumes"
-	@echo "  make clean-all   - Stop and remove all containers, volumes, images and networks"
 	@echo "  make rebuild     - Clean all and restart the last used environment"
 	@echo "  make rebuild-dev - Clean all and restart development environment"
 	@echo "  make rebuild-prod - Clean all and restart production environment"
