@@ -1,5 +1,8 @@
 <?php
 
+// Загружаем переменные окружения из файла .env
+require_once __DIR__ . '/env_loader.php';
+
 // Database connection parameters
 $host = getenv('MYSQL_HOST') ?: 'db_dev';
 $dbname = getenv('MYSQL_DATABASE') ?: 'sovpadem';
@@ -7,7 +10,7 @@ $username = getenv('MYSQL_USER') ?: 'sovpadem_user';
 $password = getenv('MYSQL_PASSWORD') ?: 'sovpadem_password';
 
 try {
-    // Connect to the database
+    // Connect to the database with explicit UTF-8 settings
     $pdo = new PDO(
         "mysql:host=$host;dbname=$dbname;charset=utf8mb4",
         $username,
@@ -15,34 +18,36 @@ try {
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false
+            PDO::ATTR_EMULATE_PREPARES => false,
+            // Добавляем явные настройки кодировки
+            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
         ]
     );
     
     echo "Connected to database successfully.\n";
     
-    // Create questions table
+    // Create questions table with explicit UTF-8 settings
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS questions (
             id INT AUTO_INCREMENT PRIMARY KEY,
             text VARCHAR(255) NOT NULL,
             active BOOLEAN DEFAULT TRUE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        )
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
     echo "Created questions table.\n";
     
-    // Create answer_options table
+    // Create answer_options table with explicit UTF-8 settings
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS answer_options (
             id INT AUTO_INCREMENT PRIMARY KEY,
             value INT NOT NULL,
             text VARCHAR(100) NOT NULL
-        )
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
     echo "Created answer_options table.\n";
     
-    // Create tests table
+    // Create tests table with explicit UTF-8 settings
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS tests (
             id VARCHAR(16) PRIMARY KEY,
@@ -50,11 +55,11 @@ try {
             partner_completed BOOLEAN DEFAULT FALSE,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-        )
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
     echo "Created tests table.\n";
     
-    // Create user_answers table
+    // Create user_answers table with explicit UTF-8 settings
     $pdo->exec("
         CREATE TABLE IF NOT EXISTS user_answers (
             id INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,7 +70,7 @@ try {
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (test_id) REFERENCES tests(id),
             FOREIGN KEY (question_id) REFERENCES questions(id)
-        )
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
     ");
     echo "Created user_answers table.\n";
     
