@@ -41,9 +41,9 @@ services:
 
   db:
     image: mysql:8.0
+    platform: linux/amd64
     container_name: sovpadem_db
     restart: unless-stopped
-    hostname: sovpadem_db
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-sovpadem}
