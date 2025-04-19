@@ -2,18 +2,136 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    background-color: #faf8fb;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: #333;
+    line-height: 1.6;
 }
 
 .container {
     flex: 1;
+    max-width: 1200px;
+    padding: 0 20px;
 }
 
+/* Градиентный заголовок */
+.gradient-heading {
+    background: linear-gradient(90deg, #9b4dca, #e94c89);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+}
+
+/* Стилизация карточек */
+.card-feature {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #fff;
+}
+
+.card-feature:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(155, 77, 202, 0.1);
+}
+
+/* Круг с номером */
+.feature-circle-container {
+    padding: 10px;
+}
+
+.feature-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(155, 77, 202, 0.1), rgba(233, 76, 137, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.feature-number {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #9b4dca, #e94c89);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Заголовки карточек */
+.feature-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Текст карточек */
+.feature-text {
+    color: #666;
+    font-size: 1rem;
+    line-height: 1.5;
+}
+
+/* Кнопка начать тест */
+.btn-start-test {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 36px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(90deg, #9b4dca, #e94c89);
+    border-radius: 50px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(155, 77, 202, 0.3);
+}
+
+.btn-start-test:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(155, 77, 202, 0.4);
+    color: #fff;
+}
+
+.btn-start-test:active {
+    transform: translateY(1px);
+}
+
+/* Контейнер для кнопки */
+.cta-container {
+    padding: 20px 0;
+}
+
+/* Информационный текст */
+.info-text {
+    color: #777;
+    font-size: 0.95rem;
+    margin-top: 20px;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .gradient-heading {
+        font-size: 2.2rem;
+    }
+
+    .btn-start-test {
+        padding: 14px 28px;
+        font-size: 16px;
+    }
+}
+
+/* Оригинальные стили */
 .options {
     padding-left: 20px;
 }
 
 .card {
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     margin-bottom: 20px;
 }
 
@@ -23,4 +141,12 @@ body {
 
 footer {
     margin-top: auto;
+    background-color: #f8f9fb;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding: 20px 0;
+}
+
+footer p {
+    color: #777;
+    margin-bottom: 0;
 }
