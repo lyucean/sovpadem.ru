@@ -50,7 +50,7 @@ services:
       MYSQL_USER: ${MYSQL_USER:-sovpadem_user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
     volumes:
-      - sovpadem-mysql-data:/var/lib/mysql
+      - sovpadem_db_data:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d # Добавляем инициализацию БД
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf # Добавляем настройки кодировки
     command: --default-authentication-plugin=mysql_native_password
@@ -106,7 +106,7 @@ services:
       MYSQL_USER: ${MYSQL_USER:-sovpadem_user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
     volumes:
-      - sovpadem-mysql-data:/var/lib/mysql
+      - sovpadem_db_data:/var/lib/mysql
       - ./database:/docker-entrypoint-initdb.d # Добавляем инициализацию БД
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf # Добавляем настройки кодировки
     networks:
@@ -115,7 +115,7 @@ services:
       - dev
 
 volumes:
-  sovpadem-mysql-data:
+  sovpadem_db_data:
 
 networks:
   web:
