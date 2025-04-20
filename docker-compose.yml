@@ -7,6 +7,9 @@ services:
       - ./src:/var/www/html
       - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
       - ./composer.json:/var/www/composer.json
+      - ./phinx.php:/var/www/phinx.php
+      - ./db:/var/www/db
+      - ./scripts:/var/www/html/scripts
       - ./vendor:/var/www/vendor
     depends_on:
       - db
@@ -24,8 +27,6 @@ services:
       php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\" &&
       php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
       php -r \"unlink('composer-setup.php');\" &&
-      cd /var/www && /usr/local/bin/composer install &&
-      php /var/www/html/init_db.php &&
       apache2-foreground"
     labels:
       - traefik.enable=true
@@ -51,7 +52,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
     volumes:
       - sovpadem_db_data:/var/lib/mysql
-      - ./database:/docker-entrypoint-initdb.d # Добавляем инициализацию БД
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf # Добавляем настройки кодировки
     command: --default-authentication-plugin=mysql_native_password
     networks:
@@ -69,6 +69,9 @@ services:
       - ./src:/var/www/html
       - ./docker/apache/000-default.conf:/etc/apache2/sites-available/000-default.conf
       - ./composer.json:/var/www/composer.json
+      - ./phinx.php:/var/www/phinx.php
+      - ./db:/var/www/db
+      - ./scripts:/var/www/html/scripts
       - ./vendor:/var/www/vendor
     depends_on:
       - db_dev
@@ -85,8 +88,6 @@ services:
       php -r \"copy('https://getcomposer.org/installer', 'composer-setup.php');\" &&
       php composer-setup.php --install-dir=/usr/local/bin --filename=composer &&
       php -r \"unlink('composer-setup.php');\" &&
-      cd /var/www && /usr/local/bin/composer install &&
-      php /var/www/html/init_db.php &&
       apache2-foreground"
     networks:
       - web
@@ -107,7 +108,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-sovpadem_password}
     volumes:
       - sovpadem_db_data:/var/lib/mysql
-      - ./database:/docker-entrypoint-initdb.d # Добавляем инициализацию БД
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf # Добавляем настройки кодировки
     networks:
       - web

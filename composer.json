@@ -9,6 +9,13 @@
         "slim/php-view": "^3.2",
         "php-di/php-di": "^7.0",
         "illuminate/database": "^10.0",
-      "ext-pdo": "*"
+        "ext-pdo": "*",
+        "robmorgan/phinx": "^0.15.0"
+    },
+    "scripts": {
+        "migrate": "phinx migrate",
+        "create-migration": "phinx create",
+        "rollback": "phinx rollback",
+        "seed": "phinx seed:run"
     }
 }
