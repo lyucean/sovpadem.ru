@@ -150,3 +150,396 @@ footer p {
     color: #777;
     margin-bottom: 0;
 }
+
+/* Новые стили для теста */
+.test-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+}
+
+.test-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+}
+
+.test-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 24px;
+    color: #333;
+}
+
+.progress-container {
+    margin-bottom: 30px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #666;
+}
+
+.progress-bar {
+    height: 8px;
+    background: linear-gradient(to right, #e0e0e0, #f0f0f0);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, #8a4baf, #e94e77);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.question-container {
+    margin-bottom: 30px;
+}
+
+.question-text {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    color: #333;
+    text-align: center;
+}
+
+.answer-button {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.answer-level-1 {
+    background-color: #ffebee;
+    color: #d32f2f;
+}
+
+.answer-level-2 {
+    background-color: #fff8e1;
+    color: #ff8f00;
+}
+
+.answer-level-3 {
+    background-color: #fffde7;
+    color: #fbc02d;
+}
+
+.answer-level-4 {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.answer-level-5 {
+    background-color: #e0f2f1;
+    color: #00796b;
+}
+
+.answer-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.skip-button {
+    display: block;
+    width: auto;
+    margin: 20px auto 0;
+    padding: 10px 20px;
+    background-color: #f8e5ee;
+    color: #e94c89;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.skip-button:hover {
+    background-color: #f5d0e0;
+}
+
+.navigation-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.nav-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.back-button {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+.back-button:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+.back-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.next-button {
+    background-color: #9c27b0;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.next-button:hover {
+    background-color: #7b1fa2;
+}
+
+.submit-button {
+    background-color: #4caf50;
+    color: white;
+}
+
+.submit-button:hover {
+    background-color: #388e3c;
+}
+
+/* Новые стили для главной страницы */
+.home-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.hero-section {
+    text-align: center;
+    padding: 60px 0;
+}
+
+.main-title {
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 16px;
+    background: linear-gradient(90deg, #9b4dca, #e94c89);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    font-size: 22px;
+    color: #555;
+    margin-bottom: 40px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.section {
+    margin-bottom: 80px;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+/* Стили для секции "Как это работает" */
+.steps-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.step-card {
+    display: flex;
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(155, 77, 202, 0.1);
+}
+
+.step-number {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #9b4dca, #e94c89);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-right: 24px;
+    flex-shrink: 0;
+}
+
+.step-content {
+    flex: 1;
+}
+
+.step-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.step-description {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Стили для секции "Преимущества" */
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.benefit-card {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(155, 77, 202, 0.1);
+}
+
+.benefit-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(155, 77, 202, 0.1), rgba(233, 76, 137, 0.1));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    color: #9b4dca;
+}
+
+.benefit-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #333;
+}
+
+.benefit-description {
+    color: #666;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+/* Стили для секции "Почему это важно" */
+.why-important {
+    background-color: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 40px;
+}
+
+.important-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.important-text {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+.important-list {
+    margin-bottom: 30px;
+    padding-left: 20px;
+}
+
+.important-list li {
+    font-size: 17px;
+    color: #555;
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 10px;
+}
+
+.important-list li::before {
+    content: "•";
+    color: #9b4dca;
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 36px;
+    }
+    
+    .subtitle {
+        font-size: 18px;
+    }
+    
+    .section-title {
+        font-size: 28px;
+    }
+    
+    .step-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .step-number {
+        margin-right: 0;
+        margin-bottom: 16px;
+    }
+    
+    .why-important {
+        padding: 30px 20px;
+    }
+}

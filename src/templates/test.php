@@ -1,35 +1,36 @@
 <?php ob_start(); ?>
 
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h2>Тест на совместимость</h2>
+<div class="test-container">
+    <div class="test-card">
+        <h1 class="test-title">Ваши предпочтения</h1>
+        
+        <div class="progress-container">
+            <div class="progress-info">
+                <span>Вопрос <span id="currentQuestionNum">1</span> из <span id="totalQuestions"><?= count($questions) ?></span></span>
+                <span><span id="progressPercentage">0</span>% завершено</span>
             </div>
-            <div class="card-body">
-                <form id="compatibilityTest" action="/submit-test" method="post">
-                    <div id="questionsContainer">
-                        <!-- Questions will be loaded here via JavaScript -->
-                    </div>
-                    
-                    <div class="d-flex justify-content-between mt-4">
-                        <button type="button" id="prevBtn" class="btn btn-secondary" disabled>Назад</button>
-                        <button type="button" id="skipBtn" class="btn btn-outline-secondary">Пропустить</button>
-                        <button type="button" id="nextBtn" class="btn btn-primary">Далее</button>
-                        <button type="submit" id="submitBtn" class="btn btn-success" style="display: none;">Завершить</button>
-                    </div>
-                </form>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
             </div>
+        </div>
+        
+        <div id="questionsContainer" class="question-container">
+            <!-- Questions will be loaded here via JavaScript -->
+        </div>
+        
+        <div class="navigation-buttons">
+            <button type="button" id="prevBtn" class="nav-button back-button" disabled>Назад</button>
+            <button type="button" id="nextBtn" class="nav-button next-button">Дальше <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/></svg></button>
         </div>
     </div>
 </div>
 
 <?php 
 $content = ob_get_clean();
+$title = 'Тест на совместимость';
 include 'layout.php';
 ?>
 
-<!-- Перемещаем скрипт после включения layout.php, чтобы jQuery был уже загружен -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Загружаем вопросы из PHP
@@ -39,6 +40,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let currentQuestion = 0;
     const answers = {};
+    const totalQuestions = questions.length;
+    
+    function updateProgress() {
+        const progressPercentage = Math.round((currentQuestion / totalQuestions) * 100);
+        document.getElementById('currentQuestionNum').textContent = currentQuestion + 1;
+        document.getElementById('progressPercentage').textContent = progressPercentage;
+        document.getElementById('progressBar').style.width = progressPercentage + '%';
+    }
     
     function renderQuestion(index) {
         if (index >= questions.length) {
@@ -46,96 +55,101 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         const questionHtml = `
-            <div class="question mb-4">
-                <h4 class="mb-3">${index + 1}. ${questions[index]}</h4>
-                <div class="options">
-                    ${answerOptions.map(option => `
-                        <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="q${index}" id="q${index}_${option.value}" value="${option.value}" ${answers[questionIds[index]] === option.value ? 'checked' : ''}>
-                            <label class="form-check-label" for="q${index}_${option.value}">
-                                ${option.text}
-                            </label>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>
+            <h2 class="question-text">${questions[index]}</h2>
+            <form id="answerForm">
+                ${answerOptions.map(option => `
+                    <button type="button" class="answer-button answer-level-${option.value}" data-value="${option.value}">
+                        ${option.text}
+                    </button>
+                `).join('')}
+                <button type="button" class="skip-button" id="skipBtn">Пропустить</button>
+            </form>
         `;
         
-        $('#questionsContainer').html(questionHtml);
+        document.getElementById('questionsContainer').innerHTML = questionHtml;
+        
+        // Add event listeners to answer buttons
+        document.querySelectorAll('.answer-button').forEach(button => {
+            button.addEventListener('click', function() {
+                const value = parseInt(this.getAttribute('data-value'));
+                answers[questionIds[currentQuestion]] = value;
+                moveToNextQuestion();
+            });
+        });
+        
+        // Skip button handler
+        document.getElementById('skipBtn').addEventListener('click', function() {
+            moveToNextQuestion();
+        });
         
         // Update buttons
-        $('#prevBtn').prop('disabled', index === 0);
+        document.getElementById('prevBtn').disabled = index === 0;
         
         if (index === questions.length - 1) {
-            $('#nextBtn').hide();
-            $('#submitBtn').show();
+            document.getElementById('nextBtn').textContent = 'Завершить';
+            document.getElementById('nextBtn').classList.add('submit-button');
         } else {
-            $('#nextBtn').show();
-            $('#submitBtn').hide();
+            document.getElementById('nextBtn').innerHTML = 'Дальше <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/></svg>';
+            document.getElementById('nextBtn').classList.remove('submit-button');
         }
         
+        updateProgress();
         return true;
     }
     
-    // Initialize first question
-    renderQuestion(currentQuestion);
-    
-    // Next button handler
-    $('#nextBtn').click(function() {
-        // Save current answer
-        const selectedValue = $(`input[name="q${currentQuestion}"]:checked`).val();
-        if (selectedValue) {
-            // Используем реальный ID вопроса из базы данных
-            answers[questionIds[currentQuestion]] = parseInt(selectedValue);
-        }
-        
-        // Move to next question
+    function moveToNextQuestion() {
         currentQuestion++;
-        renderQuestion(currentQuestion);
-    });
+        if (currentQuestion >= questions.length) {
+            submitTest();
+        } else {
+            renderQuestion(currentQuestion);
+        }
+    }
     
-    // Previous button handler
-    $('#prevBtn').click(function() {
+    function moveToPrevQuestion() {
         currentQuestion--;
         renderQuestion(currentQuestion);
-    });
+    }
     
-    // Skip button handler
-    $('#skipBtn').click(function() {
-        // Move to next question without saving
-        currentQuestion++;
-        renderQuestion(currentQuestion);
-    });
-    
-    // Form submission
-    $('#compatibilityTest').submit(function(e) {
-        e.preventDefault();
-        
-        // Save last answer if selected
-        const selectedValue = $(`input[name="q${currentQuestion}"]:checked`).val();
-        if (selectedValue) {
-            // Используем реальный ID вопроса из базы данных
-            answers[questionIds[currentQuestion]] = parseInt(selectedValue);
-        }
-        
+    function submitTest() {
         // Prepare data for submission
         const formData = {
             answers: JSON.stringify(answers)
         };
         
         // Make sure this is a POST request
-        $.ajax({
-            type: 'POST',
-            url: '/submit-test',
-            data: formData,
-            success: function(response) {
-                window.location.href = `/share/${response.testId}`;
+        fetch('/submit-test', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
             },
-            error: function(xhr, status, error) {
-                console.error("Error submitting test:", error);
-                alert("Произошла ошибка при отправке теста. Пожалуйста, попробуйте еще раз.");
-            }
+            body: new URLSearchParams(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            window.location.href = `/share/${data.testId}`;
+        })
+        .catch(error => {
+            console.error("Error submitting test:", error);
+            alert("Произошла ошибка при отправке теста. Пожалуйста, попробуйте еще раз.");
         });
+    }
+    
+    // Initialize first question
+    renderQuestion(currentQuestion);
+    
+    // Next button handler
+    document.getElementById('nextBtn').addEventListener('click', function() {
+        if (currentQuestion === questions.length - 1) {
+            submitTest();
+        } else {
+            moveToNextQuestion();
+        }
+    });
+    
+    // Previous button handler
+    document.getElementById('prevBtn').addEventListener('click', function() {
+        moveToPrevQuestion();
     });
 });
 </script>
