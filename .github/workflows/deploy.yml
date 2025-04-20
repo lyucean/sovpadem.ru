@@ -19,6 +19,7 @@ jobs:
 
       - name: "Заполнение переменных среды"
         run: |
+          echo "APP_ENV=prod" >> .env
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
           echo "MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}" >> .env
           echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
