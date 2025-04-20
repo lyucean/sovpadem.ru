@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="options">
                     ${answerOptions.map(option => `
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="q${index}" id="q${index}_${option.value}" value="${option.value}" ${answers[index] === option.value ? 'checked' : ''}>
+                            <input class="form-check-input" type="radio" name="q${index}" id="q${index}_${option.value}" value="${option.value}" ${answers[questionIds[index]] === option.value ? 'checked' : ''}>
                             <label class="form-check-label" for="q${index}_${option.value}">
                                 ${option.text}
                             </label>
@@ -85,7 +85,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Save current answer
         const selectedValue = $(`input[name="q${currentQuestion}"]:checked`).val();
         if (selectedValue) {
-            answers[currentQuestion] = parseInt(selectedValue);
+            // Используем реальный ID вопроса из базы данных
+            answers[questionIds[currentQuestion]] = parseInt(selectedValue);
         }
         
         // Move to next question
@@ -113,7 +114,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Save last answer if selected
         const selectedValue = $(`input[name="q${currentQuestion}"]:checked`).val();
         if (selectedValue) {
-            answers[currentQuestion] = parseInt(selectedValue);
+            // Используем реальный ID вопроса из базы данных
+            answers[questionIds[currentQuestion]] = parseInt(selectedValue);
         }
         
         // Prepare data for submission

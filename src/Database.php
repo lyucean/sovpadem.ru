@@ -65,7 +65,8 @@ class Database {
         ");
         
         foreach ($answers as $questionId => $answerValue) {
-            $stmt->execute([$testId, $questionId + 1, $answerValue, $isPartnerInt]);
+            // Убираем +1, так как теперь мы используем реальные ID вопросов
+            $stmt->execute([$testId, $questionId, $answerValue, $isPartnerInt]);
         }
         
         // Обновить статус теста
@@ -156,4 +157,15 @@ class Database {
         $stmt->execute([$testId]);
         return $stmt->fetch() !== false;
     }
+
+    // Получить статус теста
+    public function getTestStatus($testId) {
+        $stmt = $this->pdo->prepare("
+            SELECT creator_completed, partner_completed 
+            FROM tests 
+            WHERE id = ?
+        ");
+        $stmt->execute([$testId]);
+        return $stmt->fetch();
+}
 }

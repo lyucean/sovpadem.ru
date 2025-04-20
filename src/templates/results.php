@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const results = <?= json_encode($results) ?>;
     
     // Проверяем, прошли ли оба партнера тест
-    const bothCompleted = results.bothCompleted;
-    
+    const bothCompleted = results.completed; // Исправлено с bothCompleted на completed
+
     if (!bothCompleted) {
         $('#resultsStatus').removeClass('alert-info').addClass('alert-warning')
             .html('Ожидание прохождения теста партнером. Результаты будут доступны, когда оба партнера пройдут тест.');
@@ -51,8 +51,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="list-group-item">
                     <h5 class="mb-2">${match.question}</h5>
                     <div class="d-flex justify-content-between">
-                        <span>Вы: <strong>${match.person1Answer}</strong></span>
-                        <span>Партнер: <strong>${match.person2Answer}</strong></span>
+                        <span>Вы: <strong>${match.creator_value}</strong></span>
+                        <span>Партнер: <strong>${match.partner_value}</strong></span>
                     </div>
                 </div>
             `;

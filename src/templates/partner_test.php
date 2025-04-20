@@ -33,10 +33,17 @@ include 'layout.php';
 
 <script>
 $(document).ready(function() {
-    // Get questions from PHP variables passed from the controller
+    // Get questions and their IDs from PHP variables passed from the controller
     const questions = [
         <?php foreach ($questions as $question): ?>
             "<?= htmlspecialchars($question['text']) ?>",
+        <?php endforeach; ?>
+    ];
+    
+    // Добавляем массив с ID вопросов
+    const questionIds = [
+        <?php foreach ($questions as $question): ?>
+            <?= $question['id'] ?>,
         <?php endforeach; ?>
     ];
     
@@ -46,23 +53,23 @@ $(document).ready(function() {
             { value: <?= $option['value'] ?>, text: "<?= htmlspecialchars($option['text']) ?>" },
         <?php endforeach; ?>
     ];
-    
+
     let currentQuestion = 0;
     const answers = {};
     const testId = $('input[name="testId"]').val();
-    
+
     function renderQuestion(index) {
         if (index >= questions.length) {
             return false;
         }
-        
+
         const questionHtml = `
             <div class="question mb-4">
                 <h4 class="mb-3">${index + 1}. ${questions[index]}</h4>
                 <div class="options">
                     ${answerOptions.map(option => `
                         <div class="form-check mb-2">
-                            <input class="form-check-input" type="radio" name="q${index}" id="q${index}_${option.value}" value="${option.value}" ${answers[index] === option.value ? 'checked' : ''}>
+                            <input class="form-check-input" type="radio" name="q${index}" id="q${index}_${option.value}" value="${option.value}" ${answers[questionIds[index]] === option.value ? 'checked' : ''}>
                             <label class="form-check-label" for="q${index}_${option.value}">
                                 ${option.text}
                             </label>
@@ -71,71 +78,73 @@ $(document).ready(function() {
                 </div>
             </div>
         `;
-        
+
         $('#questionsContainer').html(questionHtml);
-        
+
         // Update buttons
         $('#prevBtn').prop('disabled', index === 0);
-        
+
         if (index === questions.length - 1) {
             $('#nextBtn').hide();
             $('#submitBtn').show();
-        } else {
+                } else {
             $('#nextBtn').show();
             $('#submitBtn').hide();
-        }
-        
+                }
+
         return true;
-    }
-    
+            }
+
     // Initialize first question
     renderQuestion(currentQuestion);
-    
+
     // Next button handler
     $('#nextBtn').click(function() {
         // Save current answer
         const selectedValue = $(`input[name="q${currentQuestion}"]:checked`).val();
         if (selectedValue) {
-            answers[currentQuestion] = parseInt(selectedValue);
+            // Используем реальный ID вопроса из базы данных
+            answers[questionIds[currentQuestion]] = parseInt(selectedValue);
         }
-        
+
         // Move to next question
         currentQuestion++;
         renderQuestion(currentQuestion);
-    });
-    
+        });
+
     // Previous button handler
     $('#prevBtn').click(function() {
         currentQuestion--;
         renderQuestion(currentQuestion);
     });
-    
+
     // Skip button handler
     $('#skipBtn').click(function() {
         // Move to next question without saving
         currentQuestion++;
         renderQuestion(currentQuestion);
-    });
-    
+});
+
     // Form submission - Fix the form selector to match the actual form ID
     $('#partnerCompatibilityTest').submit(function(e) {
         e.preventDefault();
-        
+
         // Save last answer if selected
         const selectedValue = $(`input[name="q${currentQuestion}"]:checked`).val();
         if (selectedValue) {
-            answers[currentQuestion] = parseInt(selectedValue);
+            // Используем реальный ID вопроса из базы данных
+            answers[questionIds[currentQuestion]] = parseInt(selectedValue);
         }
-        
+
         // Get test ID from the page
         const testId = '<?= $testId ?>';
-        
+
         // Prepare data for submission
         const formData = {
             testId: testId,
             answers: JSON.stringify(answers)
         };
-        
+
         // Make sure this is a POST request
         $.ajax({
             type: 'POST',

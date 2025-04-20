@@ -43,6 +43,11 @@ $app->get('/test', function (Request $request, Response $response) {
     ]);
 });
 
+// Добавьте этот маршрут для обработки GET-запросов к /submit-test
+$app->get('/submit-test', function (Request $request, Response $response) {
+    // Перенаправляем на страницу теста
+    return $response->withHeader('Location', '/test')->withStatus(302);
+});
 // Make sure this route accepts POST requests
 $app->post('/submit-test', function (Request $request, Response $response) {
     // Process test submission
@@ -51,12 +56,12 @@ $app->post('/submit-test', function (Request $request, Response $response) {
     
     // Generate unique link
     $uniqueId = bin2hex(random_bytes(8));
-    
+
     // Save test to database
     $db = $this->get('db');
     $db->createTest($uniqueId);
     $db->saveUserAnswers($uniqueId, $answers);
-    
+
     // Return JSON response with the test ID
     $response->getBody()->write(json_encode(['testId' => $uniqueId]));
     return $response->withHeader('Content-Type', 'application/json');
@@ -73,8 +78,24 @@ $app->get('/share/{id}', function (Request $request, Response $response, $args) 
 $app->get('/results/{id}', function (Request $request, Response $response, $args) {
     $id = $args['id'];
     $db = $this->get('db');
+
+    // Проверяем статус теста
+    $testStatus = $db->getTestStatus($id);
+    // Если тест не найден, показываем ошибку
+    if (!$testStatus) {
+        // Если у вас нет шаблона error.php, можно использовать простой текст
+        $response->getBody()->write("Ошибка: Тест не найден");
+        return $response->withStatus(404);
+    }
+
+    // Если партнер еще не прошел тест, перенаправляем на страницу теста для партнера
+    if (!$testStatus['partner_completed']) {
+        return $response->withHeader('Location', '/test/' . $id)->withStatus(302);
+    }
+
+    // Если тест завершен обоими партнерами, показываем результаты
     $results = $db->getTestResults($id);
-    
+
     return $this->get('renderer')->render($response, 'results.php', [
         'title' => 'Результаты теста',
         'testId' => $id,
@@ -88,7 +109,7 @@ $app->post('/submit-partner-test', function (Request $request, Response $respons
     $data = $request->getParsedBody();
     $testId = $data['testId'] ?? '';
     $answers = json_decode($data['answers'] ?? '{}', true);
-    
+
     // Save partner answers to database
     $db = $this->get('db');
     if ($db->testExists($testId)) {
@@ -97,7 +118,7 @@ $app->post('/submit-partner-test', function (Request $request, Response $respons
     } else {
         $response->getBody()->write(json_encode(['success' => false, 'error' => 'Test not found']));
     }
-    
+
     return $response->withHeader('Content-Type', 'application/json');
 });
 
@@ -106,7 +127,7 @@ $app->get('/test/{id}', function (Request $request, Response $response, $args) {
     $id = $args['id'];
     $questions = $this->get('db')->getQuestions();
     $answerOptions = $this->get('db')->getAnswerOptions();
-    
+
     return $this->get('renderer')->render($response, 'partner_test.php', [
         'title' => 'Пройти тест партнера',
         'testId' => $id,
