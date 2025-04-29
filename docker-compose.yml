@@ -45,6 +45,8 @@ services:
     platform: linux/amd64
     container_name: sovpadem_db
     restart: unless-stopped
+    ports:
+      - "4400:3306"  # Внешний порт 4400 мапится на стандартный порт MySQL 3306
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
       MYSQL_DATABASE: ${MYSQL_DATABASE:-sovpadem}
@@ -53,7 +55,7 @@ services:
     volumes:
       - sovpadem_db_data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/custom.cnf # Добавляем настройки кодировки
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --bind-address=0.0.0.0
     networks:
       - web
     profiles:
