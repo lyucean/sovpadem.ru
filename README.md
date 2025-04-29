@@ -62,7 +62,6 @@ make prod
 sovpadem/
 ├── db/
 │   ├── migrations/    # Миграции базы данных
-│   └── seeds/         # Сидеры для тестовых данных
 ├── docker/
 │   ├── apache/
 │   │   └── 000-default.conf
